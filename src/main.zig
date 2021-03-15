@@ -72,7 +72,7 @@ test "switch" {
 
 test "out of bounds" {
     @setRuntimeSafety(false);
-    const a = [3]u8{1, 2, 3};
+    const a = [3]u8{ 1, 2, 3 };
     var index: u8 = 5;
     const b = a[index];
 }
@@ -104,7 +104,7 @@ fn total(values: []const u8) usize {
 }
 
 test "slices" {
-    const array = [_]u8{1, 2, 3, 4, 5};
+    const array = [_]u8{ 1, 2, 3, 4, 5 };
     const slice = array[0..3];
     expect(total(slice) == 6);
 }
@@ -115,18 +115,9 @@ test "slices 2" {
     expect(@TypeOf(slice) == *const [3]u8);
 }
 
-const Direction = enum {
-    north,
-    south,
-    east,
-    west
-};
+const Direction = enum { north, south, east, west };
 
-const Value = enum(u2) { 
-   zero,
-   one,
-   two 
-};
+const Value = enum(u2) { zero, one, two };
 
 test "enum ordinal value" {
     expect(@enumToInt(Value.zero) == 0);
@@ -171,24 +162,16 @@ const Vec3 = struct {
 };
 
 test "struct things" {
-    var vec = Vec3 {
-        .x = 0,
-        .y = 4,
-        .z = 7
-    };
+    var vec = Vec3{ .x = 0, .y = 4, .z = 7 };
     vec.yo();
 
     expect(vec.x == 4);
 }
 
-const Payload = union {
-    int: i64,
-    float: f64,
-    bool: bool
-};
+const Payload = union { int: i64, float: f64, bool: bool };
 
 test "simple union" {
-    var payload = Payload { .int = 1234 };
+    var payload = Payload{ .int = 1234 };
 }
 
 const Tag = enum { a, b, c };
@@ -209,4 +192,78 @@ test "controled int overflow" {
     var x: u8 = 255;
     x +%= 1;
     expect(x == 0);
+}
+
+test "int float things" {
+    const a: i32 = 0;
+    const b = @intToFloat(f32, a);
+    const c = @floatToInt(i32, b);
+    expect(c == a);
+}
+
+fn rangeHasNumber(begin: usize, end: usize, number: usize) bool {
+    var i = begin;
+    return while (i < end) : (i += 1) {
+        if (i == number) {
+            break true;
+        }
+    } else false;
+}
+
+test "while loop expression" {
+    expect(rangeHasNumber(0, 10, 3));
+}
+
+test "null" {
+    var x: ?usize = null;
+    const data = [_]u8{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12 };
+    for(data) |v, i| {
+        if (v == 10) x = 1;
+    }
+
+    expect(x == null);
+}
+
+test "orelse" {
+    var a: ?f32 = null;
+    var b = a orelse 0;
+    expect(b == 0);
+    expect(@TypeOf(b) == f32);
+}
+
+test "orelse unreachable" {
+    const a: ?f32 = 5;
+    const b = a orelse unreachable;
+    const c = a.?;
+    expect(b == c);
+    expect(@TypeOf(c) == f32);
+}
+
+test "opt capture" {
+    const a: ?i32 = 5;
+
+    if (a != null) {
+        const value = a.?;
+    }
+
+    const b: ?i32 = 5;
+    
+    if (b) |value| {}
+}
+
+var numbers_left: u32 = 4;
+
+fn eventuallyNull() ?u32 {
+    if (numbers_left == 0) return null;
+    numbers_left -= 1;
+    return numbers_left;
+}
+
+test "while null" {
+    var sum: u32 = 0;
+    while (eventuallyNull()) |val| {
+        sum += val;
+    }
+
+    expect(sum == 6);
 }
