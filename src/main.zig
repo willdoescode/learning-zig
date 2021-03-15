@@ -267,3 +267,35 @@ test "while null" {
 
     expect(sum == 6);
 }
+
+test "cool types" {
+    const a = 5;
+
+    const b: if (a < 10) f32 else i32 = 5;
+}
+
+fn Matrix(
+    comptime T: type,
+    comptime width: comptime_int,
+    comptime height: comptime_int,
+) type {
+    return [height][width]T;
+}
+
+test "returning a type" {
+    expect(Matrix(f32, 4, 4) == [4][4]f32);
+}
+
+fn addSmallInts(comptime T: type, a: T, b: T) T {
+    return switch (@typeInfo(T)) {
+        .ComptimeInt => a + b,
+        .Int => |info| if (info.bits <= 16) a + b else @compileError("ints too large"),
+        else => @compileError("only ints accepted")
+    };
+}
+
+test "typeinfo switch" {
+    const x = addSmallInts(u16, 20, 30);
+    expect(@TypeOf(x) == u16);
+    expect(x == 50);
+}
