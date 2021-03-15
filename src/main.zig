@@ -180,3 +180,33 @@ test "struct things" {
 
     expect(vec.x == 4);
 }
+
+const Payload = union {
+    int: i64,
+    float: f64,
+    bool: bool
+};
+
+test "simple union" {
+    var payload = Payload { .int = 1234 };
+}
+
+const Tag = enum { a, b, c };
+
+const Tagged = union(Tag) { a: u8, b: f32, c: bool };
+
+test "switch on tagged union" {
+    var value = Tagged{ .b = 1.5 };
+    switch (value) {
+        .a => |*byte| byte.* += 1,
+        .b => |*float| float.* *= 2,
+        .c => |*b| b.* = !b.*,
+    }
+    expect(value.b == 3);
+}
+
+test "controled int overflow" {
+    var x: u8 = 255;
+    x +%= 1;
+    expect(x == 0);
+}
