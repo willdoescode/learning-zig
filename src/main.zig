@@ -518,3 +518,8 @@ test "tuple" {
     expect(values.@"3"[0] == 'h');
 }
 
+test "sentinel termination" {
+    const terminated = [3:0]u8{3, 2, 1};
+    expect(terminated.len == 3);
+    expect(@bitCast([4]u8, terminated)[3] == 0);
+}
