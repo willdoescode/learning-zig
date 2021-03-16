@@ -217,7 +217,7 @@ test "while loop expression" {
 test "null" {
     var x: ?usize = null;
     const data = [_]u8{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12 };
-    for(data) |v, i| {
+    for (data) |v, i| {
         if (v == 10) x = 1;
     }
 
@@ -247,7 +247,7 @@ test "opt capture" {
     }
 
     const b: ?i32 = 5;
-    
+
     if (b) |value| {}
 }
 
@@ -290,7 +290,7 @@ fn addSmallInts(comptime T: type, a: T, b: T) T {
     return switch (@typeInfo(T)) {
         .ComptimeInt => a + b,
         .Int => |info| if (info.bits <= 16) a + b else @compileError("ints too large"),
-        else => @compileError("only ints accepted")
+        else => @compileError("only ints accepted"),
     };
 }
 
@@ -324,7 +324,7 @@ fn Vec(
         const Self = @This();
 
         fn abs(self: Self) Self {
-            var tmp = Self { .data = undefined };
+            var tmp = Self{ .data = undefined };
             for (self.data) |v, i| {
                 tmp.data[i] = if (v < 0)
                     -v
@@ -408,10 +408,9 @@ test "while error union capture" {
 }
 
 test "for capture" {
-    const x = [_]i8{1, 5, 120, -5};
+    const x = [_]i8{ 1, 5, 120, -5 };
     for (x) |v| expect(@TypeOf(v) == i8);
 }
-
 
 const Info = union(enum) {
     a: u32,
@@ -421,7 +420,7 @@ const Info = union(enum) {
 };
 
 test "switch capture" {
-    var b = Info { .a = 10 };
+    var b = Info{ .a = 10 };
     const x = switch (b) {
         .b => |str| blk: {
             expect(@TypeOf(str) == []const u8);
@@ -432,7 +431,7 @@ test "switch capture" {
         .a, .d => |num| blk: {
             expect(@TypeOf(num) == u32);
             break :blk num * 2;
-        }
+        },
     };
 
     expect(x == 20);
@@ -443,9 +442,9 @@ fn pointerList(x: *[3]u8) void {
 }
 
 test "for with pointer" {
-    var data = [_]u8{1, 2, 3};
+    var data = [_]u8{ 1, 2, 3 };
     pointerList(&data);
-    expect(eql(u8, &data, &[_]u8{2, 3, 4}));
+    expect(eql(u8, &data, &[_]u8{ 2, 3, 4 }));
 }
 
 // Inline for loops allow things that happen at compile time such as @sizeOf
@@ -473,7 +472,7 @@ test "opaque" {
 }
 
 test "anon structs" {
-    const Point = struct { x: i32, y: i32 }; 
+    const Point = struct { x: i32, y: i32 };
     var pt: Point = .{
         .x = 13,
         .y = 67,
@@ -481,4 +480,21 @@ test "anon structs" {
 
     expect(pt.x == 13);
     expect(pt.y == 67);
+}
+
+test "full anon struct" {
+    dump(.{
+        .int = @as(u32, 1234),
+        .float = @as(f64, 12.34),
+        .b = true,
+        .s = "hi",
+    });
+}
+
+fn dump(args: anytype) void {
+    expect(args.int == 1234);
+    expect(args.float == 12.34);
+    expect(args.b);
+    expect(args.s[0] == 'h');
+    expect(args.s[1] == 'i');
 }
