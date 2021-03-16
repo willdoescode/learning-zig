@@ -355,3 +355,23 @@ fn plusOne(x: anytype) @TypeOf(x) {
 test "inferred function parameter" {
     expect(plusOne(@as(u32, 1)) == 2);
 }
+
+test "opt if" {
+    var maybe: ?usize = 10;
+    if (maybe) |n| {
+        expect(@TypeOf(n) == usize);
+        expect(n == 10);
+    } else {
+        unreachable;
+    }
+}
+
+test "error union if" {
+    var err_un: error{Err}!u32 = 5;
+    if (err_un) |e| {
+        expect(@TypeOf(e) == u32);
+        expect(e == 5);
+    } else |err| {
+        unreachable;
+    }
+}
