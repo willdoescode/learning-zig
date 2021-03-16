@@ -455,3 +455,19 @@ test "inline for loop" {
     inline for (types) |T| sum += @sizeOf(T);
     expect(sum == 10);
 }
+
+// Still dont quit understand opaque structs but whatever
+
+const Window = opaque {
+    fn show(self: *Window) void {
+        show_window(self);
+    }
+};
+const Button = opaque {};
+
+extern fn show_window(*Window) callconv(.C) void;
+
+test "opaque" {
+    var main_window: *Window = undefined;
+    main_window.show();
+}
