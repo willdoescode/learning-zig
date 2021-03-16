@@ -471,3 +471,14 @@ test "opaque" {
     var main_window: *Window = undefined;
     main_window.show();
 }
+
+test "anon structs" {
+    const Point = struct { x: i32, y: i32 }; 
+    var pt: Point = .{
+        .x = 13,
+        .y = 67,
+    };
+
+    expect(pt.x == 13);
+    expect(pt.y == 67);
+}
