@@ -437,3 +437,13 @@ test "switch capture" {
 
     expect(x == 20);
 }
+
+fn pointerList(x: *[3]u8) void {
+    for (x) |*byte| byte.* += 1;
+}
+
+test "for with pointer" {
+    var data = [_]u8{1, 2, 3};
+    pointerList(&data);
+    expect(eql(u8, &data, &[_]u8{2, 3, 4}));
+}
