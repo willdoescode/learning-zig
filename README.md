@@ -3,7 +3,7 @@
 #### Running
 
 ```shell
-zig run src/main.zig
+zig build run
 ```
 
 #### Testing
