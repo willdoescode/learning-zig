@@ -599,3 +599,12 @@ const alt = @import("./alt.zig");
 test "other file" {
     expect(alt.hello() == 5);
 }
+
+test "allocation" {
+    const allocator = std.heap.page_allocator;
+    const memory = try allocator.alloc(u8, 100);
+    defer allocator.free(memory);
+
+    expect(memory.len == 100);
+    expect(@TypeOf(memory) == []u8);
+}
