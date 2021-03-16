@@ -593,3 +593,9 @@ test "Vector loop" {
 
     expect(sum == 510);
 }
+
+const alt = @import("./alt.zig");
+
+test "other file" {
+    expect(alt.hello() == 5);
+}
