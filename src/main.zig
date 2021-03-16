@@ -578,3 +578,18 @@ test "vector * scalar" {
 
     expect(meta.eql(y, Vector(3, f32){ 25, 75, 5 }));
 }
+
+const len = std.mem.len;
+
+test "Vector loop" {
+    const x = Vector(4, u8){255, 0, 255, 0};
+    var sum = blk: {
+        var tmp: u10 = 0;
+        var i: u8 = 0;
+
+        while (i < len(x)) : (i += 1) tmp += x[i];
+        break :blk tmp;
+    };
+
+    expect(sum == 510);
+}
