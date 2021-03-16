@@ -462,7 +462,6 @@ const Window = opaque {
         show_window(self);
     }
 };
-const Button = opaque {};
 
 extern fn show_window(*Window) callconv(.C) void;
 
@@ -498,3 +497,24 @@ fn dump(args: anytype) void {
     expect(args.s[0] == 'h');
     expect(args.s[1] == 'i');
 }
+
+test "tuple" {
+    const values = .{
+        @as(u32, 1234),
+        @as(f64, 12.34),
+        true,
+        "hi",
+    } ++ .{false} ** 2;
+
+    expect(values[0] == 1234);
+    expect(values[4] == false);
+
+    inline for (values) |v, i| {
+        if (i != 2) continue;
+        expect(v);
+    }
+
+    expect(values.len == 6);
+    expect(values.@"3"[0] == 'h');
+}
+
