@@ -447,3 +447,11 @@ test "for with pointer" {
     pointerList(&data);
     expect(eql(u8, &data, &[_]u8{2, 3, 4}));
 }
+
+// Inline for loops allow things that happen at compile time such as @sizeOf
+test "inline for loop" {
+    const types = [_]type{ i32, f32, u8, bool };
+    var sum: usize = 0;
+    inline for (types) |T| sum += @sizeOf(T);
+    expect(sum == 10);
+}
