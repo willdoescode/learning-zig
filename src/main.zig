@@ -571,3 +571,10 @@ test "vector indexing" {
     const x: Vector(4, u8) = .{ 255, 0, 255, 0 };
     expect(x[0] == 255);
 }
+
+test "vector * scalar" {
+    const x: Vector(3, f32) = .{12.5, 37.5, 2.5};
+    const y = x * @splat(3, @as(f32, 2));
+
+    expect(meta.eql(y, Vector(3, f32){ 25, 75, 5 }));
+}
