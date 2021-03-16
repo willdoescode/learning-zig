@@ -601,6 +601,7 @@ test "other file" {
 }
 
 // Page allocator is pretty ineficient
+// But no hidden allocations pretty based
 test "allocation" {
     const allocator = std.heap.page_allocator;
     const memory = try allocator.alloc(u8, 100);
