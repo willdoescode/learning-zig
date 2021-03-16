@@ -523,3 +523,8 @@ test "sentinel termination" {
     expect(terminated.len == 3);
     expect(@bitCast([4]u8, terminated)[3] == 0);
 }
+
+// [N:0] N being the length of the string allows strings to coerse into different types
+test "string literal" {
+    expect(@TypeOf("hello") == *const [5:0]u8);
+}
