@@ -375,3 +375,39 @@ test "error union if" {
         unreachable;
     }
 }
+
+test "while optional" {
+    var i: ?u32 = 10;
+    while (i) |num| : (i.? -= 1) {
+        expect(@TypeOf(num) == u32);
+        if (num == 1) {
+            i = null;
+            break;
+        }
+    }
+    expect(i == null);
+}
+
+var numbers_left2: u32 = undefined;
+
+fn eventuallyErrorSequence() !u32 {
+    return if (numbers_left2 == 0) error.ReachedZero else blk: {
+        numbers_left2 -= 1;
+        break :blk numbers_left2;
+    };
+}
+
+test "while error union capture" {
+    var sum: u32 = 0;
+    numbers_left2 = 3;
+    while (eventuallyErrorSequence()) |value| {
+        sum += value;
+    } else |err| {
+        expect(err == error.ReachedZero);
+    }
+}
+
+test "for capture" {
+    const x = [_]i8{1, 5, 120, -5};
+    for (x) |v| expect(@TypeOf(v) == i8);
+}
