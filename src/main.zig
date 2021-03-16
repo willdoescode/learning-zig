@@ -610,3 +610,16 @@ test "allocation" {
     expect(memory.len == 100);
     expect(@TypeOf(memory) == []u8);
 }
+
+test "fixed allocation buffer" {
+    var buffer: [1000]u8 = undefined;
+    var fba = std.heap.FixedBufferAllocator.init(&buffer);
+
+    var allocator = &fba.allocator;
+
+    const memory = try allocator.alloc(u8, 100);
+    defer allocator.free(memory);
+
+    expect(memory.len == 100);
+    expect(@TypeOf(memory) == []u8);
+}
