@@ -299,3 +299,59 @@ test "typeinfo switch" {
     expect(@TypeOf(x) == u16);
     expect(x == 50);
 }
+
+// Can just construct new bigger int at comptime??!??!?!?!??!?!?
+fn GetBiggerInt(comptime T: type) type {
+    return @Type(.{
+        .Int = .{
+            .bits = @typeInfo(T).Int.bits + 1,
+            .signedness = @typeInfo(T).Int.signedness,
+        },
+    });
+}
+
+test "@Type" {
+    expect(GetBiggerInt(u8) == u9);
+    expect(GetBiggerInt(i31) == i32);
+}
+
+fn Vec(
+    comptime count: comptime_int,
+    comptime T: type,
+) type {
+    return struct {
+        data: [count]T,
+        const Self = @This();
+
+        fn abs(self: Self) Self {
+            var tmp = Self { .data = undefined };
+            for (self.data) |v, i| {
+                tmp.data[i] = if (v < 0)
+                    -v
+                else
+                    v;
+            }
+            return tmp;
+        }
+
+        fn init(data: [count]T) Self {
+            return Self{ .data = data };
+        }
+    };
+}
+
+const eql = std.mem.eql;
+
+test "generic vector" {
+    const x = Vec(3, f32).init([_]f32{ 10, -10, 5 });
+    const y = x.abs();
+    expect(eql(f32, &y.data, &[_]f32{ 10, 10, 5 }));
+}
+
+fn plusOne(x: anytype) @TypeOf(x) {
+    return x + 1;
+}
+
+test "inferred function parameter" {
+    expect(plusOne(@as(u32, 1)) == 2);
+}
