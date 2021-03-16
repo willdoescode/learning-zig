@@ -556,3 +556,13 @@ test "terminated slicing"  {
     var x = [_:0]u8{255} ** 3;
     const y = x[0..3 :0];
 }
+
+const meta = std.meta;
+const Vector = meta.Vector;
+
+test "vector add" {
+    const x: Vector(4, f32) = .{1, -10, 20, -1};
+    const y: Vector(4, f32) = .{2, 10, 0, 1};
+    const z = x + y;
+    expect(meta.eql(z, Vector(4, f32){3, 0, 20, 0}));
+}
