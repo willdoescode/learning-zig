@@ -566,3 +566,8 @@ test "vector add" {
     const z = x + y;
     expect(meta.eql(z, Vector(4, f32){3, 0, 20, 0}));
 }
+
+test "vector indexing" {
+    const x: Vector(4, u8) = .{ 255, 0, 255, 0 };
+    expect(x[0] == 255);
+}
