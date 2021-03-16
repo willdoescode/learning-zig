@@ -457,18 +457,18 @@ test "inline for loop" {
 
 // Still dont quit understand opaque structs but whatever
 
-const Window = opaque {
-    fn show(self: *Window) void {
-        show_window(self);
-    }
-};
+// const Window = opaque {
+//     fn show(self: *Window) void {
+//         show_window(self);
+//     }
+// };
 
-extern fn show_window(*Window) callconv(.C) void;
+// extern fn show_window(*Window) callconv(.C) void;
 
-test "opaque" {
-    var main_window: *Window = undefined;
-    main_window.show();
-}
+// test "opaque" {
+//     var main_window: *Window = undefined;
+//     main_window.show();
+// }
 
 test "anon structs" {
     const Point = struct { x: i32, y: i32 };
