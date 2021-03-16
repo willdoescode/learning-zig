@@ -540,3 +540,14 @@ test "null terminated c_string" {
         array[i] = c_string[i];
     }
 }
+
+test "coercion" {
+    var a: [*:0]u8 = undefined;
+    const b: [*]u8 = a;
+
+    var c: [5:0]u8 = undefined;
+    const d: [5]u8 = c;
+
+    var e: [:10]f32 = undefined;
+    const f = e;
+}
