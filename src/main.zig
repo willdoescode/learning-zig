@@ -551,3 +551,8 @@ test "coercion" {
     var e: [:10]f32 = undefined;
     const f = e;
 }
+
+test "terminated slicing"  {
+    var x = [_:0]u8{255} ** 3;
+    const y = x[0..3 :0];
+}
