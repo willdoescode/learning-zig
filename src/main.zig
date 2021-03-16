@@ -528,3 +528,15 @@ test "sentinel termination" {
 test "string literal" {
     expect(@TypeOf("hello") == *const [5:0]u8);
 }
+
+
+// [T:t] t being the child type value and T being the length of the string in this case being null terminated
+test "null terminated c_string" {
+    const c_string: [*:0]const u8 = "hello";
+    var array: [5]u8 = undefined;
+
+    var i: usize = 0;
+    while (c_string[i] != 0) : (i += 1) {
+        array[i] = c_string[i];
+    }
+}
