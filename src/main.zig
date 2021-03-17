@@ -3,13 +3,7 @@ const print = std.debug.print;
 const expect = std.testing.expect;
 
 pub fn main() !void {
-    {
-        var x: usize = 0;
-        while (x < 10) : (x += 1) {
-            print("{}\n", .{x});
-        }
-    }
-    print("Hello world", .{});
+    print("Hello world\n", .{});
 }
 
 fn failingFuncition() error{Oops}!void {
@@ -611,6 +605,11 @@ test "allocation" {
     expect(@TypeOf(memory) == []u8);
 }
 
+// The std.heap.FixedBufferAllocator is an allocator that allocates 
+// memory into a fixed buffer, and does not make any heap allocations.
+// This is useful when heap usage is not wanted, for example when 
+// writing a kernel. It may also be considered for performance
+// reasons. It will give you the error OutOfMemory if it has run out of bytes.
 test "fixed allocation buffer" {
     var buffer: [1000]u8 = undefined;
     var fba = std.heap.FixedBufferAllocator.init(&buffer);
