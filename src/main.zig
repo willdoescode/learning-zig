@@ -1089,12 +1089,29 @@ test "split iterator" {
     expect(iter.next() == null);
 }
 
+// !?T return type
+
 test "iterator looping" {
     var iter = (try std.fs.cwd().openDir(".", .{ .iterate = true })).iterate();
     var file_count: usize = 0;
-    while (try iter.next()) |entry| {
+    // Unwrap !
+    while (try iter.next()) |entry| { // Capture ? payload
         if (entry.kind == .File) file_count += 1;
     }
 
     expect(file_count > 0);
+}
+
+// ?!T return type
+
+test "arg iteration" {
+    var arg_chars: usize = 0;
+    var iter = std.process.args();
+    while (iter.next(test_allocator)) |arg| { // Capture ? payload
+        const argument = arg catch break; // Handle !
+        arg_chars += argument.len;
+        test_allocator.free(argument);
+    }
+
+    expect(arg_chars > 0);
 }
