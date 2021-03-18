@@ -725,3 +725,26 @@ test "file stat" {
     expect(stat.mtime <= std.time.nanoTimestamp());
     expect(stat.atime <= std.time.nanoTimestamp());
 }
+
+test "make dir" {
+    try std.fs.cwd().makeDir("test-tmp");
+    const dir = try std.fs.cwd().openDir(
+        "test-tmp",
+        .{ .iterate = true },
+    );
+    defer {
+        std.fs.cwd().deleteTree("test-tmp") catch unreachable;
+    }
+
+    _ = try dir.createFile("x", .{});
+    _ = try dir.createFile("y", .{});
+    _ = try dir.createFile("z", .{});
+
+    var file_count: usize = 0;
+    var iter = dir.iterate();
+    while (try iter.next()) |entry| {
+        if (entry.kind == .File) file_count += 1;
+    }
+
+    expect(file_count == 3);
+}
