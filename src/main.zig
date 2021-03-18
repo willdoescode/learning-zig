@@ -1088,3 +1088,13 @@ test "split iterator" {
     expect(eql(u8, iter.next().?, ""));
     expect(iter.next() == null);
 }
+
+test "iterator looping" {
+    var iter = (try std.fs.cwd().openDir(".", .{ .iterate = true })).iterate();
+    var file_count: usize = 0;
+    while (try iter.next()) |entry| {
+        if (entry.kind == .File) file_count += 1;
+    }
+
+    expect(file_count > 0);
+}
