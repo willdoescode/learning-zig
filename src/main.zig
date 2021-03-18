@@ -649,7 +649,21 @@ test "arena allocator with fixed buffer allocator" {
 // consider using create and destroy.
 
 test "allocator create / destroy" {
-    const byte = std.heap.page_allocator.create(u8);
+    const byte = try std.heap.page_allocator.create(u8);
     defer std.heap.page_allocator.destroy(byte);
     byte.* = 128;
+}
+
+// General purpose allocator designed for memory over performance
+// But still faster than page_allocator
+
+test "gpa" {
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer {
+        const leaked = gpa.deinit();
+        if (leaked) expect(false);
+    }
+
+    const bytes = try gpa.allocator.alloc(u8, 100);
+    defer gpa.allocator.free(bytes);
 }
