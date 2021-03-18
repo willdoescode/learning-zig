@@ -1143,3 +1143,31 @@ test "custom iterator" {
     expect(eql(u8, iter.next().?, "three"));
     expect(iter.next() == null);   
 }
+
+var foo: i32 = 1;
+
+test "suspend no resume" {
+    var frame = async func();
+    // No resume to match suspend with
+    expect(foo == 2);
+}
+
+fn func() void {
+    foo += 1;
+    suspend;
+    foo += 1;
+}
+
+var bar: i32 = 1;
+
+test "suspend with resume" {
+    var frame = async func2();
+    resume frame; // Match suspend with resume
+    expect(bar == 3);
+}
+
+fn func2() void {
+    bar += 1;
+    suspend;
+    bar += 1;
+}
