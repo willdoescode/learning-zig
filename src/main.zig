@@ -1203,3 +1203,18 @@ test "@frame 1" {
     var f = async double(1);
     expect(nosuspend await f == 2);
 }
+
+fn zero(comptime x: anytype) x {
+    return 0;
+}
+
+fn awaiter(x: anyframe->f32) f32 {
+    return nosuspend await x;
+}
+
+// anyframe->T becuase return type of anyframe is normally unknown
+
+test "anyframe->T" {
+    var frame = async zero(f32);
+    expect(awaiter(&frame) == 0);
+}
