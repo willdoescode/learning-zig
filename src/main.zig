@@ -800,3 +800,14 @@ fn nextline(reader: anytype, buffer: []u8) !?[]const u8 {
 //         .{input},
 //     );
 // }
+
+test "fmt" {
+    const string = try std.fmt.allocPrint(
+        test_allocator,
+        "{d} + {d} = {d}",
+        .{ 9, 10, 19 },
+    );
+    defer test_allocator.free(string);
+
+    expect(eql(u8, string, "9 + 10 = 19"));
+}
