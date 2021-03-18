@@ -932,3 +932,19 @@ test "json stringify" {
         \\{"lat":5.19976654e+01,"long":-7.40687012e-01}
     ));
 }
+
+test "json parse strings" {
+    var stream = std.json.TokenStream.init(
+        \\{ "name": "Joe", "age": 25 }
+    );
+
+    const User = struct { name: []u8, age: u16 };
+
+    // Inline structs need heap allocator
+    const x = try std.json.parse(User, &stream, .{ .allocator = test_allocator });
+
+    defer std.json.parseFree(User, x, .{ .allocator = test_allocator });
+
+    expect(eql(u8, x.name, "Joe"));
+    expect(x.age == 25);
+}
