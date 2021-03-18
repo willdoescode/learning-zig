@@ -990,3 +990,26 @@ test "crypto random numbers" {
 //     std.time.sleep(3 * std.time.ns_per_s / 2);
 //     expect(tick == 1);
 // }
+
+test "hashmaps" {
+    const Point = struct { x: i32, y: i32 };
+    var map = std.AutoHashMap(u32, Point).init(test_allocator);
+    defer map.deinit();
+
+    try map.put(1525, .{ .x = 1, .y = -4 });
+    try map.put(1550, .{ .x = 2, .y = -3 });
+    try map.put(1575, .{ .x = 3, .y = -2 });
+    try map.put(1600, .{ .x = 4, .y = -1 });
+    
+    expect(map.count() == 4);
+
+    var sum = Point{ .x = 0, .y = 0 };
+
+    var iterator = map.iterator();
+    while (iterator.next()) |entry| {
+        sum.x += entry.value.x;
+        sum.y += entry.value.y;
+    }
+    expect(sum.x == 10);
+    expect(sum.y == -10);
+}
