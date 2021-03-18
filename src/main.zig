@@ -748,3 +748,13 @@ test "make dir" {
 
     expect(file_count == 3);
 }
+
+test "io write usage" {
+    var list = ArrayList(u8).init(test_allocator);
+    defer list.deinit();
+
+    const bytes_written = try list.writer().write("Hello World!");
+
+    expect(bytes_written == 12);
+    expect(eql(u8, list.items, "Hello World!"));
+}
