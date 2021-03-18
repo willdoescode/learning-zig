@@ -1171,3 +1171,12 @@ fn func2() void {
     suspend;
     bar += 1;
 }
+
+fn func3() u32 {
+    return 5;
+}
+
+test "async / await" {
+    var frame = async func3();
+    expect(await frame == 5);
+}
