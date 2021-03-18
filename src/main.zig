@@ -667,3 +667,18 @@ test "gpa" {
     const bytes = try gpa.allocator.alloc(u8, 100);
     defer gpa.allocator.free(bytes);
 }
+
+const test_allocator = std.testing.allocator;
+const ArrayList = std.ArrayList;
+
+test "array list" {
+    var list = ArrayList(u8).init(test_allocator);
+    defer list.deinit();
+
+    try list.appendSlice(&[_]u8{1, 2, 3, 4});
+
+    for (list.items) |c, i| {
+        if (i == 0) print("\n", .{});
+        print("{}\n", .{c});
+    }
+}
