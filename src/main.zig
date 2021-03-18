@@ -633,3 +633,14 @@ test "Arena allocator" {
     const m2 = try allocator.alloc(u8, 10);
     const m3 = try allocator.alloc(u8, 100);
 }
+
+test "arena allocator with fixed buffer allocator" {
+    var buffer: [510]u8 = undefined;
+    var fba = &std.heap.FixedBufferAllocator.init(&buffer).allocator;
+
+    var arena = std.heap.ArenaAllocator.init(fba);
+    defer arena.deinit();
+    var allocator = &arena.allocator;
+
+    const m2 = try allocator.alloc(u8, 100);
+}
