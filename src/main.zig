@@ -612,13 +612,21 @@ test "allocation" {
 // reasons. It will give you the error OutOfMemory if it has run out of bytes.
 test "fixed allocation buffer" {
     var buffer: [1000]u8 = undefined;
-    var fba = std.heap.FixedBufferAllocator.init(&buffer);
-
-    var allocator = &fba.allocator;
+    var allocator = &std.heap.FixedBufferAllocator.init(&buffer).allocator;
 
     const memory = try allocator.alloc(u8, 100);
     defer allocator.free(memory);
 
     expect(memory.len == 100);
     expect(@TypeOf(memory) == []u8);
+}
+
+test "Arena allocator" {
+    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+    defer arena.deinit();
+    var allocator = &arena.allocator;
+
+    const m1 = try allocator.alloc(u8, 1);
+    const m2 = try allocator.alloc(u8, 10);
+    const m3 = try allocator.alloc(u8, 100);
 }
