@@ -811,3 +811,15 @@ test "fmt" {
 
     expect(eql(u8, string, "9 + 10 = 19"));
 }
+
+// Print to buffer
+
+test "print" {
+    var list = std.ArrayList(u8).init(test_allocator);
+    defer list.deinit();
+    try list.writer().print(
+        "{} + {} = {}",
+        .{ 9, 10, 19 },
+    );
+    expect(eql(u8, list.items, "9 + 10 = 19"));
+}
