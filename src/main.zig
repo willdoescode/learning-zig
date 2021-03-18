@@ -644,3 +644,12 @@ test "arena allocator with fixed buffer allocator" {
 
     const m2 = try allocator.alloc(u8, 100);
 }
+
+// alloc and free are used for slices. For single items,
+// consider using create and destroy.
+
+test "allocator create / destroy" {
+    const byte = std.heap.page_allocator.create(u8);
+    defer std.heap.page_allocator.destroy(byte);
+    byte.* = 128;
+}
