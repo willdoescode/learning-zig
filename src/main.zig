@@ -711,3 +711,17 @@ test "filesystem stuff" {
 
     expect(eql(u8, buffer[0..bytes_read], "Hello File!"));
 }
+
+test "file stat" {
+    const file = try std.fs.cwd().createFile(
+        "junk_file2.txt",
+        .{},
+    );
+    defer file.close();
+    const stat = try file.stat();
+    expect(stat.size == 0);
+    expect(stat.kind == .File);
+    expect(stat.ctime <= std.time.nanoTimestamp());
+    expect(stat.mtime <= std.time.nanoTimestamp());
+    expect(stat.atime <= std.time.nanoTimestamp());
+}
