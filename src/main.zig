@@ -682,3 +682,16 @@ test "array list" {
         print("{}\n", .{c});
     }
 }
+
+test "array list with gpa" {
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer {
+        const leaked = gpa.deinit();
+        if (leaked) expect(false);
+    }
+
+    var list = ArrayList(u8).init(&gpa.allocator);
+    defer list.deinit();
+
+    try list.append('h');
+}
