@@ -913,3 +913,22 @@ test "parse json" {
     expect(x.lat == 40.684540);
     expect(x.long == -74.401422);
 }
+
+test "json stringify" {
+    const x = Place {
+        .lat = 51.997664,
+        .long = -0.740687,
+    };
+
+    // Can be replaced with gpa or page allocator though page is slower
+    var buf: [100]u8 = undefined;
+    var fba = std.heap.FixedBufferAllocator.init(&buf);
+    var string = std.ArrayList(u8).init(&fba.allocator);
+    try std.json.stringify(x, .{}, string.writer());
+
+    expect(eql(
+        u8,
+        string.items,
+        \\{"lat":5.19976654e+01,"long":-7.40687012e-01}
+    ));
+}
