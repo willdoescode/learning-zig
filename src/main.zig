@@ -1068,6 +1068,8 @@ test "stack" {
     }
 }
 
+// std.sort.sort has a best case of O(n), and an average and worst case of O(n*log(n)).
+
 test "sorting" {
     var data = [_]u8{ 10, 240, 0, 0, 10, 5 };
     std.sort.sort(u8, &data, {}, comptime std.sort.asc(u8));
