@@ -1026,3 +1026,14 @@ test "fetchput" {
     expect(old.?.value == 10);
     expect(map.get(255).? == 100);
 }
+
+test "string hashmap" {
+    var map = std.StringHashMap(enum { cool, uncool }).init(test_allocator);
+    defer map.deinit();
+
+    try map.put("loris", .uncool);
+    try map.put("me", .cool);
+
+    expect(map.get("me").? == .cool);
+    expect(map.get("loris").? == .uncool);
+}
