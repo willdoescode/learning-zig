@@ -776,3 +776,27 @@ test "io reader" {
 
     expect(eql(u8, contents, message));
 }
+
+fn nextline(reader: anytype, buffer: []u8) !?[]const u8 {
+    var line = (try reader.readUntilDelimiterOrEof(
+        buffer,
+        '\n'
+    )) orelse return null;
+
+    return line;
+}
+
+// test "read until next line" {
+//     const stdout = std.io.getStdOut();
+//     const stdin = std.io.getStdIn();
+
+//     try stdout.writeAll("Enter your name:\n> ");
+
+//     var buffer: [100]u8 = undefined;
+//     const input = (try nextline(stdin.reader(), &buffer)).?;
+
+//     try stdout.writer().print(
+//         "Your name is: \"{s}\"\n",
+//         .{input},
+//     );
+// }
