@@ -621,6 +621,9 @@ test "fixed allocation buffer" {
     expect(@TypeOf(memory) == []u8);
 }
 
+// std.heap.ArenaAllocator takes in a child allocator,
+// and allows you to allocate many times and only free once
+
 test "Arena allocator" {
     var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
     defer arena.deinit();
