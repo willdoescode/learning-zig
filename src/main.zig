@@ -900,3 +900,16 @@ test "custom fmt" {
         "Claude Shannon (1916-2001)",
     ));
 }
+
+const Place = struct { lat: f32, long: f32 };
+
+test "parse json" {
+    var stream = std.json.TokenStream.init(
+        \\{ "lat": 40.684540, "long": -74.401422 }
+    );
+
+    const x = std.json.parse(Place, &stream, .{}) catch unreachable;
+
+    expect(x.lat == 40.684540);
+    expect(x.long == -74.401422);
+}
