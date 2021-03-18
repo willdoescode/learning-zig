@@ -694,4 +694,7 @@ test "array list with gpa" {
     defer list.deinit();
 
     try list.append('h');
+    try list.append('e');
+
+    expect(eql(u8, list.items, "he"));
 }
