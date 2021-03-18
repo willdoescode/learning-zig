@@ -1077,3 +1077,14 @@ test "sorting" {
     std.sort.sort(u8, &data, {}, comptime std.sort.desc(u8));
     expect(eql(u8, &data, &[_]u8{ 240, 10, 10, 5, 0, 0 }));
 }
+
+test "split iterator" {
+    const text = "robust, optimal, reusable, maintainable, ";
+    var iter = std.mem.split(text, ", ");
+    expect(eql(u8, iter.next().?, "robust"));
+    expect(eql(u8, iter.next().?, "optimal"));
+    expect(eql(u8, iter.next().?, "reusable"));
+    expect(eql(u8, iter.next().?, "maintainable"));
+    expect(eql(u8, iter.next().?, ""));
+    expect(iter.next() == null);
+}
