@@ -758,3 +758,21 @@ test "io write usage" {
     expect(bytes_written == 12);
     expect(eql(u8, list.items, "Hello World!"));
 }
+
+test "io reader" {
+    const message = "Hello File!";
+
+    const file = try std.fs.cwd().createFile("junk_file2.txt", .{ .read = true });
+    defer file.close();
+
+    try file.writeAll(message);
+    try file.seekTo(0);
+
+    const contents = try file.reader().readAllAlloc(
+        test_allocator,
+        message.len
+    );
+    defer test_allocator.free(contents);
+
+    expect(eql(u8, contents, message));
+}
