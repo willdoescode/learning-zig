@@ -1013,3 +1013,16 @@ test "hashmaps" {
     expect(sum.x == 10);
     expect(sum.y == -10);
 }
+
+// .fetchPut puts a value in the hash map, 
+// returning a value if there was previously a value for that key.
+
+test "fetchput" {
+    var map = std.AutoHashMap(u8, f32).init(test_allocator);
+    defer map.deinit();
+
+    try map.put(255, 10);
+    const old = try map.fetchPut(255, 100);
+    expect(old.?.value == 10);
+    expect(map.get(255).? == 100);
+}
