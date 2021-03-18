@@ -1180,3 +1180,26 @@ test "async / await" {
     var frame = async func3();
     expect(await frame == 5);
 }
+
+fn add(a: i32, b: i32) i64 {
+    return a + b;
+}
+
+test "@Frame" {
+    var frame: @Frame(add) = async add(1, 2);
+    expect(await frame == 3);
+}
+
+// Function resumes itself
+
+fn double(value: u8) u9 {
+    suspend {
+        resume @frame();
+    }
+    return value * 2;
+}
+
+test "@frame 1" {
+    var f = async double(1);
+    expect(nosuspend await f == 2);
+}
