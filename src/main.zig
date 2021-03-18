@@ -972,3 +972,21 @@ test "crypto random numbers" {
     const c = rand.int(u8);
     const d = rand.intRangeAtMost(u8, 0, 255);
 }
+
+// Waits 3 seconds so commented out
+
+// fn ticker(step: u8) void {
+//     while (true) {
+//         std.time.sleep(1 * std.time.ns_per_s);
+//         tick += @as(isize, step);
+//     }
+// }
+
+// var tick: isize = 0;
+
+// test "threads" {
+//     var thread = try std.Thread.spawn(ticker, @as(u8, 1));
+//     expect(tick == 0);
+//     std.time.sleep(3 * std.time.ns_per_s / 2);
+//     expect(tick == 1);
+// }
